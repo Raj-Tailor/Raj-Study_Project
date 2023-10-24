@@ -27,3 +27,16 @@ for reaction in p.reactions: #Walk the reactions. From here you can also extract
         print(ProductID)
         Metabolites.append(ProductID)
    # print(str(x))
+UniqueMetabolites = set(Metabolites)  # Delete repetitions
+url='https://www.genome.jp/entry/-f+m+'
+for met in UniqueMetabolites: #This is the list of metabolites name that you can use to retrieve the mol files
+    print(met)
+    mapa=url+met #Write a new URL following KEGG format
+    print(mapa)
+import requests #This library is independent from KEGG, but you can extract information from web pages, such as the simple interface where mol files are stored
+
+#url = 'https://www.genome.jp/entry/-f+m+C00048' The URL have an useful structure
+r = requests.get(mapa, allow_redirects=True) #Request all the information from that page, the mol file
+open('C03458.txt', 'wb').write(r.content) #Save mol file as .txt
+
+

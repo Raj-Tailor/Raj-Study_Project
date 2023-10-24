@@ -2,13 +2,13 @@ import Bio.KEGG
 from Bio.KEGG.REST import kegg_get
 from Bio.KEGG.KGML.KGML_parser import read
 
-org = 'T00114' #KEGG Organism ID
+org = 'ppu01100' #KEGG Organism ID
 f = open(org + '.kgml','w') #Creates a file .kgml to save all the information retrived from KEGG
 dat = kegg_get(org,'kgml') #Retrive reactions and compounds from KEGG
 datr = dat.read() #Convert data into a readible format
-f.write (datr) #Write and save 
+f.write (datr) #Write and save
 f.close()
-p= read(open('T00114.kgml', 'r')) #read the model
+p= read(open('ppu01100.kgml', 'r')) #read the model
 Metabolites=[] #Starting a list to save all the metabolites
 for reaction in p.reactions: #Walk the reactions. From here you can also extract the ID for all the metabolites
     print('\n')
@@ -24,6 +24,17 @@ for reaction in p.reactions: #Walk the reactions. From here you can also extract
     for product in reaction.products:
         ProductName=product.name
         ProductID=ProductName.replace('cpd:','')
-        print(ProductID)       
+        print(ProductID)
         Metabolites.append(ProductID)
    # print(str(x))
+UniqueMetabolites = set(Metabolites)  # Delete repetitions
+url='https://www.genome.jp/entry/-f+m+'
+for met in UniqueMetabolites: #This is the list of metabolites name that you can use to retrieve the mol files
+    print(met)
+    mapa=url+met #Write a new URL following KEGG format
+    print(mapa)
+import requests #This library is independent from KEGG, but you can extract information from web pages, such as the simple interface where mol files are stored
+
+#url = 'https://www.genome.jp/entry/-f+m+C00048' The URL have an useful structure
+r = requests.get(mapa, allow_redirects=True) #Request all the information from that page, the mol file
+open('C03458.txt', 'wb').write(r.content) #Save mol file as .txt
